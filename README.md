@@ -1,3 +1,4 @@
+
 # Portfolyo Projesi
 
 ASP.NET Core MVC, Entity Framework Core (Code First) ve SQL Server ile geliştirilmiş, Admin panelinden yönetilen dinamik portfolyo sitesi.
@@ -68,3 +69,14 @@ Not: Proje görselleri `wwwroot/uploads` klasörüne kaydedilir, klasör ilk yü
 ## Video Link
 
 -https://youtu.be/6jYddD7g_rA
+
+<img width="1902" height="882" alt="gelen mesajlar" src="https://github.com/user-attachments/assets/9172aa9a-10ae-4490-8ba2-c223f61e679a" />
+
+<img width="1880" height="907" alt="dashboard" src="https://github.com/user-attachments/assets/7c37fef2-a23f-4759-b31b-1c3dcf9abcf5" />
+
+<img width="1907" height="897" alt="anasayfa" src="https://github.com/user-attachments/assets/c3604541-d89f-4fdb-89d9-2c57d2e7c8ee" />
+
+<img width="1832" height="777" alt="iletişim" src="https://github.com/user-attachments/assets/10335c30-f5d0-42aa-8f28-95b3a8b86baf" />
+
+
+

@@ -1,0 +1,38 @@
+﻿@model Education
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="Title" class="form-label-custom">
+            Bölüm / Derece <span class="required-star">*</span>
+        </label>
+        <input asp-for="Title" class="form-control-custom" placeholder="Örn: Bilgisayar Mühendisliği (Lisans)" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="SchoolName" class="form-label-custom">
+            Okul <span class="required-star">*</span>
+        </label>
+        <input asp-for="SchoolName" class="form-control-custom" placeholder="Örn: İstanbul Teknik Üniversitesi" />
+        <span asp-validation-for="SchoolName" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Years" class="form-label-custom">Yıllar</label>
+        <input asp-for="Years" class="form-control-custom" placeholder="Örn: 2018 - 2022" />
+        <span asp-validation-for="Years" class="text-danger"></span>
+    </div>
+
+    <div class="col-12">
+        <label asp-for="Description" class="form-label-custom">Açıklama</label>
+        <textarea asp-for="Description" class="form-control-custom" rows="3"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="col-12">
+        <div class="form-check">
+            <input asp-for="IsActive" class="form-check-input" />
+            <label asp-for="IsActive" class="form-check-label ms-1">Aktif (sitede göster)</label>
+        </div>
+    </div>
+</div>

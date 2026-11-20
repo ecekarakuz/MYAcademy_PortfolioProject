@@ -1,0 +1,166 @@
+﻿@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    string Active(string name) => controller == name ? "active" : "";
+    int unreadCount = ViewBag.UnreadMessageCount ?? 0;
+    string ownerName = ViewBag.OwnerName ?? "Yönetim Paneli";
+    string initials = string.Concat(
+        ownerName.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                 .Take(2)
+                 .Select(w => char.ToUpper(w[0]))
+    );
+}
+
+<style>
+    /* Menü düzeni: eşit aralık, hizalı ikon ve yazı */
+    .admin-sidebar .sidebar-nav {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+        .admin-sidebar .sidebar-nav li {
+            margin: 0;
+            padding: 0;
+        }
+
+        .admin-sidebar .sidebar-nav .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            line-height: 1.2;
+            transition: background-color .15s ease, transform .15s ease;
+        }
+
+            .admin-sidebar .sidebar-nav .sidebar-link i {
+                flex: 0 0 20px;
+                width: 20px;
+                text-align: center;
+                font-size: 1.05rem;
+            }
+
+            .admin-sidebar .sidebar-nav .sidebar-link span:not(.badge-count) {
+                flex: 1;
+            }
+
+            .admin-sidebar .sidebar-nav .sidebar-link .badge-count {
+                margin-left: auto;
+            }
+
+            .admin-sidebar .sidebar-nav .sidebar-link:hover {
+                transform: translateX(2px);
+            }
+
+    .admin-sidebar .menu-section-label {
+        padding: 0 14px;
+        margin-bottom: 8px;
+    }
+</style>
+
+<!-- ==================== 1. LEFT SIDEBAR ==================== -->
+<aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+        <div class="brand-mark">
+            <i class="bi bi-briefcase-fill"></i>
+        </div>
+        <div class="brand-text">
+            <h1>@ownerName</h1>
+            <span>Yönetim Paneli</span>
+        </div>
+    </div>
+
+    <div class="sidebar-menu-wrapper">
+        <div class="menu-section-label">Menü</div>
+        <ul class="sidebar-nav">
+            <li>
+                <a href="/Admin/Dashboard/Index" class="sidebar-link @Active("Dashboard")">
+                    <i class="bi bi-grid-1x2"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Admin/About/UpdateAbout" class="sidebar-link @Active("About")">
+                    <i class="bi bi-person"></i>
+                    <span>Hakkımda</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Admin/Skill/SkillList" class="sidebar-link @Active("Skill")">
+                    <i class="bi bi-stars"></i>
+                    <span>Yeteneklerim</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Admin/Experience/ExperienceList" class="sidebar-link @Active("Experience")">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                    <span>Deneyimlerim</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Admin/Project/ProjectList" class="sidebar-link @Active("Project")">
+                    <i class="bi bi-code-slash"></i>
+                    <span>Projelerim</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Admin/Category/CategoryList" class="sidebar-link @Active("Category")">
+                    <i class="bi bi-tags"></i>
+                    <span>Kategoriler</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Admin/Education/EducationList" class="sidebar-link @Active("Education")">
+                    <i class="bi bi-mortarboard"></i>
+                    <span>Eğitimlerim</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Admin/Contact/UpdateContact" class="sidebar-link @Active("Contact")">
+                    <i class="bi bi-telephone"></i>
+                    <span>İletişim</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Admin/SocialMedia/SocialMediaList" class="sidebar-link @Active("SocialMedia")">
+                    <i class="bi bi-share"></i>
+                    <span>Sosyal Medya</span>
+                </a>
+            </li>
+            <li>
+                <a href="/Admin/Message/MessageList" class="sidebar-link @Active("Message")">
+                    <i class="bi bi-inbox"></i>
+                    <span>Gelen Mesajlar</span>
+                    @if (unreadCount > 0)
+                    {
+                        <span class="badge-count" id="sidebarUnreadBadge">@unreadCount</span>
+                    }
+                </a>
+            </li>
+        </ul>
+
+        <div class="menu-section-label mt-4">Sistem & Bağlantı</div>
+        <ul class="sidebar-nav">
+            <li>
+                <a href="/" target="_blank" class="sidebar-link">
+                    <i class="bi bi-box-arrow-up-right"></i>
+                    <span>Siteyi Önizle</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="sidebar-footer">
+        <div class="admin-user-card">
+            <div class="user-avatar-circle">@initials</div>
+            <div class="user-info">
+                <div class="user-name">@ownerName</div>
+                <div class="user-role">İçerik Yöneticisi</div>
+            </div>
+        </div>
+    </div>
+</aside>

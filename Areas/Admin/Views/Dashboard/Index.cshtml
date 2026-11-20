@@ -1,0 +1,201 @@
+﻿@model MYAcademy_PortfolioProject.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    int maxCount = Model.CategorySummaries.Any() ? Model.CategorySummaries.Max(x => x.ProjectCount) : 1;
+}
+<main class="page-content-area">
+
+    <div class="content-header-row">
+        <div>
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-subtitle">Portfolyo sitenizin güncel durumuna genel bakış.</p>
+        </div>
+        <div class="header-actions">
+            <a asp-controller="Project" asp-action="CreateProject" class="btn-pastel-primary">
+                <i class="bi bi-plus-circle-fill"></i>
+                <span>Yeni Proje Ekle</span>
+            </a>
+            <a asp-controller="Message" asp-action="MessageList" class="btn-pastel-secondary">
+                <i class="bi bi-inbox"></i>
+                <span>Mesajları Gör</span>
+                @if (Model.UnreadMessages > 0)
+                {
+                    <span class="badge-count">@Model.UnreadMessages</span>
+                }
+            </a>
+            <a asp-controller="Skill" asp-action="CreateSkill" class="btn-pastel-secondary">
+                <i class="bi bi-stars"></i>
+                <span>Yeni Yetenek</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- İstatistik kartları -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-icon-wrapper icon-green"><i class="bi bi-code-slash"></i></div>
+            <div class="stat-content">
+                <span class="stat-label">Toplam Proje</span>
+                <h3 class="stat-value">@Model.TotalProjects</h3>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrapper icon-blue"><i class="bi bi-check2-circle"></i></div>
+            <div class="stat-content">
+                <span class="stat-label">Aktif Proje</span>
+                <h3 class="stat-value">@Model.ActiveProjects</h3>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrapper icon-purple"><i class="bi bi-stars"></i></div>
+            <div class="stat-content">
+                <span class="stat-label">Yetenek</span>
+                <h3 class="stat-value">@Model.SkillCount</h3>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrapper icon-beige"><i class="bi bi-journal-bookmark-fill"></i></div>
+            <div class="stat-content">
+                <span class="stat-label">Deneyim</span>
+                <h3 class="stat-value">@Model.ExperienceCount</h3>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrapper icon-green"><i class="bi bi-mortarboard"></i></div>
+            <div class="stat-content">
+                <span class="stat-label">Eğitim</span>
+                <h3 class="stat-value">@Model.EducationCount</h3>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrapper icon-blue"><i class="bi bi-envelope"></i></div>
+            <div class="stat-content">
+                <span class="stat-label">Toplam Mesaj</span>
+                <h3 class="stat-value">@Model.TotalMessages</h3>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrapper icon-purple"><i class="bi bi-envelope-exclamation"></i></div>
+            <div class="stat-content">
+                <span class="stat-label">Okunmamış Mesaj</span>
+                <h3 class="stat-value">@Model.UnreadMessages</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+
+        <!-- Son 5 mesaj -->
+        <div class="col-lg-7">
+            <div class="data-table-card h-100">
+                <div class="table-filter-bar">
+                    <h5 class="m-0">Son 5 Mesaj</h5>
+                    <a asp-controller="Message" asp-action="MessageList" style="font-size:0.85rem;">Tümünü gör</a>
+                </div>
+                <div class="table-responsive-wrapper">
+                    <table class="custom-admin-table">
+                        <thead>
+                            <tr>
+                                <th>Gönderen</th>
+                                <th>Konu</th>
+                                <th>Tarih</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var m in Model.LastMessages)
+                            {
+                                <tr style="@(m.IsRead ? "" : "background:#FFF8E6; font-weight:600;")">
+                                    <td>@m.SenderName</td>
+                                    <td>
+                                        <a asp-controller="Message" asp-action="MessageList"
+                                           asp-route-openId="@m.MessageId">@m.Subject</a>
+                                    </td>
+                                    <td>@m.SendDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                    <td>
+                                        <span class="status-pill @(m.IsRead ? "status-passive" : "status-active")">
+                                            @(m.IsRead ? "Okundu" : "Okunmadı")
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                            @if (!Model.LastMessages.Any())
+                            {
+                                <tr><td colspan="4" style="text-align:center;">Henüz mesaj yok.</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kategori özeti -->
+        <div class="col-lg-5">
+            <div class="data-table-card h-100">
+                <div class="table-filter-bar">
+                    <h5 class="m-0">Kategori Özeti</h5>
+                </div>
+                <div style="padding: 16px;">
+                    @foreach (var c in Model.CategorySummaries)
+                    {
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span class="exp-title-text">@c.CategoryName</span>
+                                <span class="order-badge">@c.ProjectCount proje</span>
+                            </div>
+                            <div class="progress" style="height:8px;">
+                                <div class="progress-bar" style="width:@(c.ProjectCount * 100 / maxCount)%"></div>
+                            </div>
+                        </div>
+                    }
+                    @if (!Model.CategorySummaries.Any())
+                    {
+                        <p class="text-muted m-0">Henüz projesi olan kategori yok.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Son eklenen projeler -->
+        <div class="col-12">
+            <div class="data-table-card">
+                <div class="table-filter-bar">
+                    <h5 class="m-0">Son Eklenen Projeler</h5>
+                    <a asp-controller="Project" asp-action="ProjectList" style="font-size:0.85rem;">Tümünü gör</a>
+                </div>
+                <div class="table-responsive-wrapper">
+                    <table class="custom-admin-table">
+                        <thead>
+                            <tr>
+                                <th>Proje</th>
+                                <th>Kategori</th>
+                                <th>Tarih</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var p in Model.LastProjects)
+                            {
+                                <tr>
+                                    <td><span class="exp-title-text">@p.ProjectTitle</span></td>
+                                    <td><span class="work-type-badge">@p.Category?.CategoryName</span></td>
+                                    <td>@p.CreatedDate.ToString("dd.MM.yyyy")</td>
+                                    <td>
+                                        <span class="status-pill @(p.IsActive ? "status-active" : "status-passive")">
+                                            @(p.IsActive ? "Aktif" : "Pasif")
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                            @if (!Model.LastProjects.Any())
+                            {
+                                <tr><td colspan="4" style="text-align:center;">Henüz proje eklenmemiş.</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

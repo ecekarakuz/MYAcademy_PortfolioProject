@@ -1,0 +1,206 @@
+﻿@model List<Message>
+@{
+    ViewData["Title"] = "Gelen Mesajlar";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+    string? search = ViewBag.Search;
+    int unreadCount = ViewBag.UnreadCount;
+    int totalCount = ViewBag.TotalCount;
+}
+<main class="page-content-area">
+
+    <div class="content-header-row">
+        <div>
+            <h1 class="page-title">Gelen Mesajlar</h1>
+            <p class="page-subtitle">
+                Toplam <strong>@totalCount</strong> mesaj,
+                <strong id="unreadStat">@unreadCount</strong> okunmamış.
+            </p>
+        </div>
+        <div class="header-actions">
+            <form asp-action="MarkAllRead" method="post">
+                <button type="submit" class="btn-pastel-secondary">
+                    <i class="bi bi-check2-all"></i>
+                    <span>Tümünü Okundu İşaretle</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="data-table-card">
+
+        <!-- Arama -->
+        <form asp-action="MessageList" method="get" class="table-filter-bar">
+            <div class="filters-left-group">
+                <div class="filter-search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" name="search" value="@search" placeholder="Gönderen veya konuya göre ara...">
+                </div>
+                <button type="submit" class="btn-pastel-primary" style="padding: 7px 14px; font-size: 0.8rem;">Ara</button>
+                @if (!string.IsNullOrEmpty(search))
+                {
+                    <a asp-action="MessageList" class="btn-pastel-secondary" style="padding: 7px 14px; font-size: 0.8rem;">Temizle</a>
+                }
+            </div>
+        </form>
+
+        <div class="table-responsive-wrapper">
+            <table class="custom-admin-table">
+                <thead>
+                    <tr>
+                        <th style="width: 70px;">ID</th>
+                        <th>Gönderen</th>
+                        <th>Konu</th>
+                        <th>Tarih</th>
+                        <th>Durum</th>
+                        <th style="text-align: right; width: 170px;">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr id="row-@item.MessageId"
+                            style="@(item.IsRead ? "" : "background:#FFF8E6; font-weight:600;")">
+                            <td class="col-id">#@item.MessageId</td>
+                            <td>
+                                @item.SenderName
+                                <small class="text-muted d-block" style="font-size:0.75rem; font-weight:400;">@item.SenderEmail</small>
+                            </td>
+                            <td>@item.Subject</td>
+                            <td>@item.SendDate.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>
+                                <span class="js-status status-pill @(item.IsRead ? "status-passive" : "status-active")">
+                                    @(item.IsRead ? "Okundu" : "Okunmadı")
+                                </span>
+                            </td>
+                            <td style="text-align: right;">
+                                <div class="row-actions-group justify-content-end">
+                                    <button type="button" class="btn-action-icon btn-view" title="Mesajı Aç"
+                                            onclick="openMessage(@item.MessageId)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <form asp-action="ToggleRead" asp-route-id="@item.MessageId" method="post" class="d-inline">
+                                        <button type="submit" class="btn-action-icon btn-edit"
+                                                title="@(item.IsRead ? "Okunmadı yap" : "Okundu yap")">
+                                            <i class="bi @(item.IsRead ? "bi-envelope" : "bi-envelope-open")"></i>
+                                        </button>
+                                    </form>
+                                    <form asp-action="DeleteMessage" asp-route-id="@item.MessageId" method="post" class="d-inline">
+                                        <button type="button" class="btn-action-icon btn-delete"
+                                                title="Sil" onclick="confirmDelete(this)">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="6" style="text-align:center;">
+                                @(string.IsNullOrEmpty(search) ? "Henüz mesaj yok." : "Aramanıza uygun mesaj bulunamadı.")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<!-- Mesaj detay popup'ı -->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mdSubject"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <strong id="mdSender"></strong>
+                    <a id="mdEmail" class="d-block" style="font-size:0.85rem;"></a>
+                    <small class="text-muted" id="mdDate"></small>
+                </div>
+                <hr />
+                <p id="mdBody" style="white-space: pre-wrap;"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Bootstrap JS yüklü değilse yükle (varsa dokunma)
+    if (typeof bootstrap === 'undefined') {
+        document.write('<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"><\/script>');
+    }
+</script>
+<script>
+    function openMessage(id) {
+        fetch('/Admin/Message/GetDetail/' + id, { method: 'POST' })
+            .then(function (response) {
+                if (!response.ok) throw new Error('Mesaj alınamadı');
+                return response.json();
+            })
+            .then(function (d) {
+                // textContent kullanıyoruz: mesaj içeriği HTML olarak çalıştırılmaz
+                document.getElementById('mdSubject').textContent = d.subject;
+                document.getElementById('mdSender').textContent = d.senderName;
+                document.getElementById('mdDate').textContent = d.sendDate;
+                document.getElementById('mdBody').textContent = d.messageDetail;
+
+                var mail = document.getElementById('mdEmail');
+                mail.textContent = d.senderEmail;
+                mail.href = 'mailto:' + d.senderEmail;
+
+                new bootstrap.Modal(document.getElementById('messageModal')).show();
+
+                if (d.wasUnread) markRowAsRead(d.id);
+            })
+            .catch(function () {
+                Swal.fire('Hata', 'Mesaj açılırken bir sorun oluştu.', 'error');
+            });
+    }
+
+    // Sayfayı yenilemeden satırı "okundu" görünümüne çevirir
+    function markRowAsRead(id) {
+        var row = document.getElementById('row-' + id);
+        if (row) {
+            row.style.background = '';
+            row.style.fontWeight = '';
+            var pill = row.querySelector('.js-status');
+            pill.textContent = 'Okundu';
+            pill.classList.remove('status-active');
+            pill.classList.add('status-passive');
+        }
+
+        var stat = document.getElementById('unreadStat');
+        if (stat) stat.textContent = Math.max(0, parseInt(stat.textContent) - 1);
+
+        var badge = document.getElementById('sidebarUnreadBadge');
+        if (badge) {
+            var n = parseInt(badge.textContent) - 1;
+            if (n <= 0) badge.remove(); else badge.textContent = n;
+        }
+    }
+</script>
+@if (ViewBag.OpenId != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            openMessage(@ViewBag.OpenId);
+        });
+    </script>
+}

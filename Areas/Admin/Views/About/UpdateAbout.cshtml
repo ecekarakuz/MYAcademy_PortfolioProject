@@ -1,0 +1,92 @@
+﻿@model HeroSectioncs
+@{
+    ViewData["Title"] = "Hakkımda";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<main class="page-content-area">
+
+    <div class="content-header-row">
+        <div>
+            <h1 class="page-title">Ana Sayfa & Hakkımda</h1>
+            <p class="page-subtitle">Sitenizin karşılama alanındaki isim, unvan, tanıtım ve fotoğrafı buradan yönetin.</p>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <div class="side-drawer-card">
+        <form asp-action="UpdateAbout" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="HeroSectionId" />
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label asp-for="Greeting" class="form-label-custom">
+                        Selamlama <span class="required-star">*</span>
+                    </label>
+                    <input asp-for="Greeting" class="form-control-custom" placeholder="Örn: Merhaba, ben" />
+                    <span asp-validation-for="Greeting" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Title" class="form-label-custom">
+                        İsim / Unvan <span class="required-star">*</span>
+                    </label>
+                    <input asp-for="Title" class="form-control-custom" placeholder="Örn: Ece Dalyan" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label-custom">
+                        Tanıtım Yazısı <span class="required-star">*</span>
+                    </label>
+                    <textarea asp-for="Description" class="form-control-custom" rows="5"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label-custom">Fotoğraf (jpg, png, webp - en fazla 2 MB)</label>
+                    <input type="file" name="imageFile" id="imageFile" class="form-control-custom"
+                           accept=".jpg,.jpeg,.png,.webp" />
+                    @Html.ValidationMessage("imageFile", new { @class = "text-danger" })
+                    <small class="text-muted d-block mt-1">Boş bırakırsanız mevcut fotoğraf kalır.</small>
+                </div>
+
+                <div class="col-md-6">
+                    @if (!string.IsNullOrEmpty(Model.MainImageUrl))
+                    {
+                        <small class="text-muted d-block">Mevcut fotoğraf:</small>
+                        <img id="currentImage" src="@Model.MainImageUrl" alt="Mevcut fotoğraf"
+                             style="max-width:200px;border-radius:10px;" />
+                    }
+                    <img id="imagePreview" src="#" alt="Önizleme"
+                         style="display:none;max-width:200px;border-radius:10px;" />
+                </div>
+
+                <div class="col-12 d-flex gap-2">
+                    <button type="submit" class="btn-pastel-primary" style="padding: 8px 20px;">
+                        <i class="bi bi-check-lg"></i>
+                        <span>Kaydet</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script>
+    document.getElementById('imageFile').addEventListener('change', function () {
+        var preview = document.getElementById('imagePreview');
+        var current = document.getElementById('currentImage');
+        if (this.files && this.files[0]) {
+            preview.src = URL.createObjectURL(this.files[0]);
+            preview.style.display = 'block';
+            if (current) current.style.display = 'none';
+        } else {
+            preview.style.display = 'none';
+            if (current) current.style.display = '';
+        }
+    });
+</script>

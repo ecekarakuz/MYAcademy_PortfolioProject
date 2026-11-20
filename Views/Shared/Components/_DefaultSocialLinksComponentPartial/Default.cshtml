@@ -1,0 +1,14 @@
+﻿@model List<SocialMedia>
+
+@if (Model.Any())
+{
+    <div class="d-flex align-items-center gap-2 pt-2">
+        <span class="text-muted small me-2 font-heading fw-semibold">@ViewBag.Label</span>
+        @foreach (var item in Model)
+        {
+            <a href="@item.Url" target="_blank" rel="noopener noreferrer" class="social-pill" title="@item.Platform">
+                <i class="@item.Icon"></i>
+            </a>
+        }
+    </div>
+}

@@ -1,0 +1,148 @@
+﻿@model MYAcademy_PortfolioProject.Entities.Contact
+
+<!-- 11. Contact Section -->
+<section id="contact">
+    <div class="container">
+        <div class="row gy-5">
+            <!-- Sol: iletişim bilgileri (veritabanından) -->
+            <div class="col-lg-5 reveal-on-scroll">
+                <div class="eyebrow-badge">
+                    <i class="bi bi-envelope-paper-fill"></i> İLETİŞİME GEÇELİM
+                </div>
+                <h2 class="section-title">@Model.Title</h2>
+                <p class="text-muted mb-4 fs-6">@Model.Description</p>
+
+                <div class="d-flex flex-column gap-3 mb-4">
+                    @if (!string.IsNullOrEmpty(Model.Email))
+                    {
+                        <div class="d-flex align-items-center gap-3 p-3 bg-white border rounded-3 shadow-sm">
+                            <div class="skill-icon-box mb-0" style="width: 44px; height: 44px; background: var(--bg-secondary);">
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                            <div>
+                                <div class="text-muted small">E-posta</div>
+                                <div class="fw-semibold">@Model.Email</div>
+                            </div>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.PhoneNumber))
+                    {
+                        <div class="d-flex align-items-center gap-3 p-3 bg-white border rounded-3 shadow-sm">
+                            <div class="skill-icon-box mb-0" style="width: 44px; height: 44px; background: var(--bg-secondary);">
+                                <i class="bi bi-telephone"></i>
+                            </div>
+                            <div>
+                                <div class="text-muted small">Telefon</div>
+                                <div class="fw-semibold">@Model.PhoneNumber</div>
+                            </div>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Location))
+                    {
+                        <div class="d-flex align-items-center gap-3 p-3 bg-white border rounded-3 shadow-sm">
+                            <div class="skill-icon-box mb-0" style="width: 44px; height: 44px; background: var(--bg-secondary);">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
+                            <div>
+                                <div class="text-muted small">Konum</div>
+                                <div class="fw-semibold">@Model.Location</div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                @await Component.InvokeAsync("_DefaultSocialLinksComponentPartial", new { label = "Sosyal Ağlar:" })
+            </div>
+
+            <!-- Sağ: form -->
+            <div class="col-lg-7 ps-lg-5 reveal-on-scroll">
+                <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm">
+                    <form id="contactForm" asp-controller="Default" asp-action="SendMessage" method="post" novalidate>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="SenderName" class="form-label small fw-semibold">Adınız Soyadınız *</label>
+                                <input type="text" class="form-control form-control-custom" id="SenderName" name="SenderName" placeholder="Örn: Ahmet Yılmaz">
+                                <span class="text-danger small" data-error-for="SenderName"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="SenderEmail" class="form-label small fw-semibold">E-posta Adresiniz *</label>
+                                <input type="email" class="form-control form-control-custom" id="SenderEmail" name="SenderEmail" placeholder="ad@ornek.com">
+                                <span class="text-danger small" data-error-for="SenderEmail"></span>
+                            </div>
+                            <div class="col-12">
+                                <label for="Subject" class="form-label small fw-semibold">Konu *</label>
+                                <input type="text" class="form-control form-control-custom" id="Subject" name="Subject" placeholder="Örn: Kurumsal .NET Eğitimi veya Danışmanlık">
+                                <span class="text-danger small" data-error-for="Subject"></span>
+                            </div>
+                            <div class="col-12">
+                                <label for="MessageDetail" class="form-label small fw-semibold">Mesajınız *</label>
+                                <textarea class="form-control form-control-custom" id="MessageDetail" name="MessageDetail" rows="5" placeholder="Projeniz veya sorunuz hakkında detayları paylaşın..."></textarea>
+                                <span class="text-danger small" data-error-for="MessageDetail"></span>
+                            </div>
+                            <div class="col-12 pt-2">
+                                <button type="submit" class="btn-sage w-100 justify-content-center py-3 fs-6">
+                                    <i class="bi bi-send-fill"></i>
+                                    <span>Mesajımı Gönder</span>
+                                </button>
+                                <div id="formFeedback" class="mt-2 text-center small"></div>
+                                <div class="text-muted text-center small mt-3" style="font-size: 0.78rem;">
+                                    <i class="bi bi-shield-check me-1"></i> Gönderilen bilgiler gizlilik ilkeleri doğrultusunda korunmaktadır.
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    (function () {
+      var form = document.getElementById('contactForm');
+      var feedback = document.getElementById('formFeedback');
+      var button = form.querySelector('button[type=submit]');
+
+      function showFeedback(text, cssClass) {
+        feedback.className = 'mt-2 text-center small ' + cssClass;
+        feedback.textContent = text;
+      }
+
+      function clearErrors() {
+        form.querySelectorAll('[data-error-for]').forEach(function (el) { el.textContent = ''; });
+        feedback.textContent = '';
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        clearErrors();
+        button.disabled = true;
+
+        fetch(form.action, { method: 'POST', body: new FormData(form) })
+          .then(function (response) {
+            return response.json().then(function (data) {
+              return { ok: response.ok, data: data };
+            });
+          })
+          .then(function (result) {
+            if (result.ok) {
+              showFeedback(result.data.message, 'text-success');
+              form.reset();
+            } else {
+              var errors = result.data.errors || {};
+              Object.keys(errors).forEach(function (key) {
+                var span = form.querySelector('[data-error-for="' + key + '"]');
+                if (span) span.textContent = errors[key];
+              });
+              showFeedback('Lütfen formdaki hataları düzeltin.', 'text-danger');
+            }
+          })
+          .catch(function () {
+            showFeedback('Mesaj gönderilemedi, lütfen daha sonra tekrar deneyin.', 'text-danger');
+          })
+          .finally(function () {
+            button.disabled = false;
+          });
+      });
+    })();
+</script>

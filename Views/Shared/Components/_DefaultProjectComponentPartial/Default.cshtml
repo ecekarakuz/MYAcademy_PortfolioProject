@@ -1,0 +1,85 @@
+﻿@model MYAcademy_PortfolioProject.Models.ProjectSectionViewModel
+
+<!-- 8. Featured Projects Section -->
+<section id="projects">
+    <div class="container">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 gap-3 reveal-on-scroll">
+            <div>
+                <div class="eyebrow-badge">
+                    <i class="bi bi-folder-check"></i> SEÇİLMİŞ ÇALIŞMALAR
+                </div>
+                <h2 class="section-title mb-1">
+                    Fikirden Ürüne Dönüşen Projeler
+                </h2>
+                <p class="section-description mb-0">
+                    Öğrenme, üretme ve problem çözme süreçlerimin birer yansıması olan projelerimden bazıları.
+                </p>
+            </div>
+
+            <!-- Kategori filtresi -->
+            <div class="d-flex flex-wrap gap-2" id="projectFilters">
+                <a href="/#projects"
+                   class="filter-btn text-decoration-none @(Model.SelectedCategoryId == null ? "active" : "")">Tümü</a>
+                @foreach (var c in Model.Categories)
+                {
+                    <a href="/?categoryId=@c.CategoryId#projects"
+                       class="filter-btn text-decoration-none @(Model.SelectedCategoryId == c.CategoryId ? "active" : "")">@c.CategoryName</a>
+                }
+            </div>
+        </div>
+
+        <div class="row g-4" id="projectGrid">
+            @foreach (var item in Model.Projects)
+            {
+                <div class="col-lg-6 project-item reveal-on-scroll">
+                    <div class="project-card">
+                        <div class="project-thumb-wrap">
+                            @if (!string.IsNullOrEmpty(item.ImagePath))
+                            {
+                                <img src="@item.ImagePath" alt="@item.ProjectTitle" class="project-thumb-img">
+                            }
+                            else
+                            {
+                                <div class="d-flex align-items-center justify-content-center bg-light" style="height: 220px;">
+                                    <i class="bi bi-image" style="font-size: 3rem; opacity: 0.3;"></i>
+                                </div>
+                            }
+                            <span class="project-category-tag">@item.Category?.CategoryName</span>
+                        </div>
+                        <div class="project-body">
+                            <h3 class="h4 fw-bold mb-2">@item.ProjectTitle</h3>
+                            <p class="text-muted small mb-4 flex-grow-1">@item.Description</p>
+
+                            @if (!string.IsNullOrWhiteSpace(item.Technologies))
+                            {
+                                <div class="mb-4">
+                                    @foreach (var tech in item.Technologies.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                                    {
+                                        <span class="tech-badge">@tech</span>
+                                    }
+                                </div>
+                            }
+
+                            <div class="d-flex align-items-center justify-content-between pt-3 border-top">
+                                <a href="#contact" class="btn-sage btn-sm">
+                                    <span>İletişime Geç</span>
+                                    <i class="bi bi-arrow-up-right"></i>
+                                </a>
+                                <span class="text-muted small">
+                                    <i class="bi bi-calendar3 me-1"></i>@item.CreatedDate.ToString("MM.yyyy")
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (!Model.Projects.Any())
+            {
+                <div class="col-12 text-center text-muted py-5">
+                    Bu kategoride henüz proje bulunmuyor.
+                </div>
+            }
+        </div>
+    </div>
+</section>}

@@ -1,0 +1,36 @@
+﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Mobil sidebar aç/kapat
+    const sidebar = document.getElementById('adminSidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+
+    if (sidebar && sidebarToggle) {
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('show-sidebar');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 991.98) {
+                if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
+                    sidebar.classList.remove('show-sidebar');
+                }
+            }
+        });
+    }
+
+    // Tüm silme butonları bunu kullanır
+    function confirmDelete(btn) {
+        Swal.fire({
+            title: 'Emin misiniz?',
+            text: 'Bu kayıt kalıcı olarak silinecek.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Evet, sil',
+            cancelButtonText: 'Vazgeç'
+        }).then(function (result) {
+            if (result.isConfirmed) {
+                btn.closest('form').submit();
+            }
+        });
+    }
+</script>

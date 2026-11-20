@@ -1,0 +1,93 @@
+﻿@model Project
+@{
+    ViewData["Title"] = "Proje Ekle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<main class="page-content-area">
+
+    <div class="content-header-row">
+        <div>
+            <h1 class="page-title">Yeni Proje Ekle</h1>
+            <p class="page-subtitle">Portfolyonuza yeni bir proje ekleyin.</p>
+        </div>
+    </div>
+
+    <div class="side-drawer-card">
+        <form asp-action="CreateProject" method="post" enctype="multipart/form-data">
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label asp-for="ProjectTitle" class="form-label-custom">
+                        Proje Adı <span class="required-star">*</span>
+                    </label>
+                    <input asp-for="ProjectTitle" class="form-control-custom" placeholder="Örn: Kişisel Blog Sitesi" />
+                    <span asp-validation-for="ProjectTitle" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="CategoryId" class="form-label-custom">
+                        Kategori <span class="required-star">*</span>
+                    </label>
+                    <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control-custom">
+                        <option value="0">-- Kategori Seç --</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label-custom">
+                        Açıklama <span class="required-star">*</span>
+                    </label>
+                    <textarea asp-for="Description" class="form-control-custom" rows="3"
+                              placeholder="Projenin kısa tanımı..."></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Technologies" class="form-label-custom">Teknolojiler</label>
+                    <input asp-for="Technologies" class="form-control-custom" placeholder="Örn: C#, ASP.NET Core, SQL Server" />
+                    <span asp-validation-for="Technologies" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label-custom">Proje Görseli (jpg, png, webp - en fazla 2 MB)</label>
+                    <input type="file" name="imageFile" id="imageFile" class="form-control-custom"
+                           accept=".jpg,.jpeg,.png,.webp" />
+                    @Html.ValidationMessage("imageFile", new { @class = "text-danger" })
+                    <img id="imagePreview" src="#" alt="Önizleme"
+                         style="display:none;margin-top:10px;max-width:220px;border-radius:10px;" />
+                </div>
+
+                <div class="col-12">
+                    <div class="form-check">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label ms-1">
+                            Aktif (sitede göster)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-12 d-flex gap-2">
+                    <a asp-action="ProjectList" class="btn-pastel-secondary" style="padding: 8px 14px;">İptal</a>
+                    <button type="submit" class="btn-pastel-primary" style="padding: 8px 20px;">
+                        <i class="bi bi-check-lg"></i>
+                        <span>Kaydet</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script>
+    // Seçilen görseli formda önizle
+    document.getElementById('imageFile').addEventListener('change', function () {
+        var preview = document.getElementById('imagePreview');
+        if (this.files && this.files[0]) {
+            preview.src = URL.createObjectURL(this.files[0]);
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+        }
+    });
+</script>

@@ -1,0 +1,36 @@
+﻿@model Category
+@{
+    ViewData["Title"] = "Kategori Güncelle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<main class="page-content-area">
+
+    <div class="content-header-row">
+        <div>
+            <h1 class="page-title">Kategori Güncelle</h1>
+            <p class="page-subtitle">Kategori adını düzenleyin.</p>
+        </div>
+    </div>
+
+    <div class="side-drawer-card">
+        <form asp-action="UpdateCategory" method="post">
+            <input type="hidden" asp-for="CategoryId" />
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="CategoryName" class="form-label-custom">
+                        Kategori Adı <span class="required-star">*</span>
+                    </label>
+                    <input asp-for="CategoryName" class="form-control-custom" />
+                    <span asp-validation-for="CategoryName" class="text-danger"></span>
+                </div>
+                <div class="col-12 d-flex gap-2">
+                    <a asp-action="CategoryList" class="btn-pastel-secondary" style="padding: 8px 14px;">İptal</a>
+                    <button type="submit" class="btn-pastel-primary" style="padding: 8px 20px;">
+                        <i class="bi bi-check-lg"></i>
+                        <span>Güncelle</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>

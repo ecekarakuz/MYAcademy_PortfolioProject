@@ -1,0 +1,56 @@
+﻿@model Experience
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="Title" class="form-label-custom">
+            Deneyim Başlığı <span class="required-star">*</span>
+        </label>
+        <input asp-for="Title" class="form-control-custom" placeholder="Örn: Kıdemli Frontend Geliştirici" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="CompanyName" class="form-label-custom">
+            Şirket / Kurum <span class="required-star">*</span>
+        </label>
+        <input asp-for="CompanyName" class="form-control-custom" placeholder="Örn: Nova Digital Studio" />
+        <span asp-validation-for="CompanyName" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="CategoryName" class="form-label-custom">
+            Çalışma Türü <span class="required-star">*</span>
+        </label>
+        <input asp-for="CategoryName" class="form-control-custom" list="workTypes" placeholder="Listeden seç veya yaz" />
+        <datalist id="workTypes">
+            <option value="Tam Zamanlı"></option>
+            <option value="Yarı Zamanlı"></option>
+            <option value="Hibrit"></option>
+            <option value="Uzaktan"></option>
+            <option value="Stajyer"></option>
+        </datalist>
+        <span asp-validation-for="CategoryName" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="DateRange" class="form-label-custom">Tarih Aralığı</label>
+        <input asp-for="DateRange" class="form-control-custom" placeholder="Örn: Ocak 2022 - Devam Ediyor" />
+        <span asp-validation-for="DateRange" class="text-danger"></span>
+    </div>
+
+    <div class="col-12">
+        <label asp-for="Description" class="form-label-custom">
+            Açıklama / Görev Kapsamı <span class="required-star">*</span>
+        </label>
+        <textarea asp-for="Description" class="form-control-custom" rows="3"
+                  placeholder="Sorumluluklar, kullanılan teknolojiler, başarılar..."></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="col-12">
+        <div class="form-check">
+            <input asp-for="IsActive" class="form-check-input" />
+            <label asp-for="IsActive" class="form-check-label ms-1">Aktif (sitede göster)</label>
+        </div>
+    </div>
+</div>

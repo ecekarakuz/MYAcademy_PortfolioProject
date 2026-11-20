@@ -1,0 +1,62 @@
+﻿@model Skill
+@{
+    ViewData["Title"] = "Yetenek Ekle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<main class="page-content-area">
+
+    <div class="content-header-row">
+        <div>
+            <h1 class="page-title">Yeni Yetenek Ekle</h1>
+            <p class="page-subtitle">Yetenek adı ve 0-100 arası seviye girin.</p>
+        </div>
+    </div>
+
+    <div class="side-drawer-card">
+        <form asp-action="CreateSkill" method="post">
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label asp-for="Title" class="form-label-custom">
+                        Yetenek Adı <span class="required-star">*</span>
+                    </label>
+                    <input asp-for="Title" class="form-control-custom" placeholder="Örn: ASP.NET Core" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Level" class="form-label-custom">
+                        Seviye: <strong id="levelValue">@Model.Level</strong>
+                    </label>
+                    <input asp-for="Level" type="range" min="0" max="100" step="5"
+                           class="form-range" id="levelRange" />
+                    <span asp-validation-for="Level" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Description" class="form-label-custom">
+                        Kısa Açıklama <span class="required-star">*</span>
+                    </label>
+                    <input asp-for="Description" class="form-control-custom" placeholder="Örn: Web uygulamaları geliştirme" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+       
+
+                <div class="col-12 d-flex gap-2">
+                    <a asp-action="SkillList" class="btn-pastel-secondary" style="padding: 8px 14px;">İptal</a>
+                    <button type="submit" class="btn-pastel-primary" style="padding: 8px 20px;">
+                        <i class="bi bi-check-lg"></i>
+                        <span>Kaydet</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script>
+    document.getElementById('levelRange').addEventListener('input', function () {
+        document.getElementById('levelValue').innerText = this.value;
+    });
+</script>

@@ -1,0 +1,110 @@
+﻿@model List<Project>
+
+@{
+    ViewData["Title"] = "Proje Listesi";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<main class="page-content-area">
+
+    <div class="content-header-row">
+        <div>
+            <h1 class="page-title">Projelerim</h1>
+            <p class="page-subtitle">Portfolyo sitenizde yer alacak projeleri buradan yönetebilirsiniz.</p>
+        </div>
+        <div class="header-actions">
+            <a asp-action="CreateProject" class="btn-pastel-primary">
+                <i class="bi bi-plus-circle-fill"></i>
+                <span>Yeni Proje Ekle</span>
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="data-table-card">
+        <div class="table-responsive-wrapper">
+            <table class="custom-admin-table">
+                <thead>
+                    <tr>
+                        <th style="width: 70px;">ID</th>
+                        <th style="width: 90px;">Görsel</th>
+                        <th>Proje</th>
+                        <th>Kategori</th>
+                        <th>Tarih</th>
+                        <th>Durum</th>
+                        <th style="text-align: right; width: 180px;">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr style="@(item.IsActive ? "" : "opacity:0.55;")">
+                            <td class="col-id">#@item.ProjectId</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.ImagePath))
+                                {
+                                    <img src="@item.ImagePath" alt="@item.ProjectTitle"
+                                         style="width:64px;height:44px;object-fit:cover;border-radius:8px;" />
+                                }
+                                else
+                                {
+                                    <span class="text-muted" style="font-size:0.75rem;">Görsel yok</span>
+                                }
+                            </td>
+                            <td>
+                                <span class="exp-title-text">@item.ProjectTitle</span>
+                                <small class="text-muted d-block" style="font-size:0.75rem;">@item.Technologies</small>
+                            </td>
+                            <td><span class="work-type-badge">@item.Category?.CategoryName</span></td>
+                            <td>@item.CreatedDate.ToString("dd.MM.yyyy")</td>
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="status-pill status-active">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="status-pill status-passive">Pasif</span>
+                                }
+                            </td>
+                            <td style="text-align: right;">
+                                <div class="row-actions-group justify-content-end">
+                                    <form asp-action="ToggleActive" asp-route-id="@item.ProjectId" method="post" class="d-inline">
+                                        <button type="submit" class="btn-action-icon btn-view"
+                                                title="@(item.IsActive ? "Pasif yap" : "Aktif yap")">
+                                            <i class="bi @(item.IsActive ? "bi-eye-slash" : "bi-eye")"></i>
+                                        </button>
+                                    </form>
+                                    <a asp-action="UpdateProject" asp-route-id="@item.ProjectId"
+                                       class="btn-action-icon btn-edit" title="Güncelle">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <form asp-action="DeleteProject" asp-route-id="@item.ProjectId"
+                                          method="post" class="d-inline">
+                                        <button type="button" class="btn-action-icon btn-delete"
+                                                title="Sil" onclick="confirmDelete(this)">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="7" style="text-align:center;">Henüz proje eklenmemiş.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>

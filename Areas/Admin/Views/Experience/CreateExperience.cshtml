@@ -1,0 +1,26 @@
+﻿@model Experience
+@{
+    ViewData["Title"] = "Deneyim Ekle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<main class="page-content-area">
+    <div class="content-header-row">
+        <div>
+            <h1 class="page-title">Yeni Deneyim Ekle</h1>
+            <p class="page-subtitle">Portfolyonuza yeni bir deneyim ekleyin.</p>
+        </div>
+    </div>
+
+    <div class="side-drawer-card">
+        <form asp-action="CreateExperience" method="post">
+            <partial name="_ExperienceForm" />
+            <div class="d-flex gap-2 mt-3">
+                <a asp-action="ExperienceList" class="btn-pastel-secondary" style="padding: 8px 14px;">İptal</a>
+                <button type="submit" class="btn-pastel-primary" style="padding: 8px 20px;">
+                    <i class="bi bi-check-lg"></i>
+                    <span>Kaydet</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</main>

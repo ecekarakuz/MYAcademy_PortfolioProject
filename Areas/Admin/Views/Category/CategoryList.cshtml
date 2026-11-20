@@ -1,0 +1,76 @@
+﻿@model List<Category>
+@{
+    ViewData["Title"] = "Kategori Listesi";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<main class="page-content-area">
+
+    <div class="content-header-row">
+        <div>
+            <h1 class="page-title">Proje Kategorileri</h1>
+            <p class="page-subtitle">Projelerinizde kullanacağınız kategorileri buradan yönetebilirsiniz.</p>
+        </div>
+        <div class="header-actions">
+            <a asp-action="CreateCategory" class="btn-pastel-primary">
+                <i class="bi bi-plus-circle-fill"></i>
+                <span>Yeni Kategori Ekle</span>
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="data-table-card">
+        <div class="table-responsive-wrapper">
+            <table class="custom-admin-table">
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">ID</th>
+                        <th>Kategori Adı</th>
+                        <th>Proje Sayısı</th>
+                        <th style="text-align: right; width: 140px;">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="col-id">#@item.CategoryId</td>
+                            <td><span class="exp-title-text">@item.CategoryName</span></td>
+                            <td><span class="order-badge">@(item.Projects?.Count ?? 0)</span></td>
+                            <td style="text-align: right;">
+                                <div class="row-actions-group justify-content-end">
+                                    <a asp-action="UpdateCategory" asp-route-id="@item.CategoryId"
+                                       class="btn-action-icon btn-edit" title="Güncelle">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <form asp-action="DeleteCategory" asp-route-id="@item.CategoryId"
+                                          method="post" class="d-inline">
+                                        <button type="button" class="btn-action-icon btn-delete"
+                                                title="Sil" onclick="confirmDelete(this)">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="4" style="text-align:center;">Henüz kategori eklenmemiş.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+

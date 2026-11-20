@@ -1,0 +1,88 @@
+﻿@model List<Education>
+@{
+    ViewData["Title"] = "Eğitim Listesi";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<main class="page-content-area">
+
+    <div class="content-header-row">
+        <div>
+            <h1 class="page-title">Eğitim</h1>
+            <p class="page-subtitle">Portfolyo sitenizde yer alacak eğitim bilgilerini yönetin.</p>
+        </div>
+        <div class="header-actions">
+            <a asp-action="CreateEducation" class="btn-pastel-primary">
+                <i class="bi bi-plus-circle-fill"></i>
+                <span>Yeni Eğitim Ekle</span>
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <div class="data-table-card">
+        <div class="table-responsive-wrapper">
+            <table class="custom-admin-table">
+                <thead>
+                    <tr>
+                        <th style="width: 70px;">ID</th>
+                        <th>Bölüm / Derece</th>
+                        <th>Okul</th>
+                        <th>Yıllar</th>
+                        <th>Durum</th>
+                        <th style="text-align: right; width: 140px;">İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr style="@(item.IsActive ? "" : "opacity:0.55;")">
+                            <td class="col-id">#@item.EducationId</td>
+                            <td><span class="exp-title-text">@item.Title</span></td>
+                            <td>@item.SchoolName</td>
+                            <td><span class="date-badge">@item.Years</span></td>
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="status-pill status-active">Aktif</span>
+                                }
+                                else
+                                {
+                                    <span class="status-pill status-passive">Pasif</span>
+                                }
+                            </td>
+                            <td style="text-align: right;">
+                                <div class="row-actions-group justify-content-end">
+                                    <a asp-action="UpdateEducation" asp-route-id="@item.EducationId"
+                                       class="btn-action-icon btn-edit" title="Güncelle">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <form asp-action="DeleteEducation" asp-route-id="@item.EducationId"
+                                          method="post" class="d-inline">
+                                        <button type="button" class="btn-action-icon btn-delete"
+                                                title="Sil" onclick="confirmDelete(this)">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="6" style="text-align:center;">Henüz eğitim kaydı eklenmemiş.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>

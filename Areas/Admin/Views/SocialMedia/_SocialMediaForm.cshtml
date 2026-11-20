@@ -1,0 +1,27 @@
+﻿@model SocialMedia
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <label asp-for="Platform" class="form-label-custom">
+            Platform <span class="required-star">*</span>
+        </label>
+        <input asp-for="Platform" class="form-control-custom" placeholder="Örn: GitHub" />
+        <span asp-validation-for="Platform" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="Url" class="form-label-custom">
+            Bağlantı <span class="required-star">*</span>
+        </label>
+        <input asp-for="Url" class="form-control-custom" placeholder="https://github.com/kullanici" />
+        <span asp-validation-for="Url" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="Icon" class="form-label-custom">
+            İkon <span class="required-star">*</span>
+        </label>
+        <input asp-for="Icon" class="form-control-custom" placeholder="Örn: bi bi-github" />
+        <span asp-validation-for="Icon" class="text-danger"></span>
+    </div>
+</div>
